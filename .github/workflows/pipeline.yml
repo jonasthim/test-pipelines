@@ -6,7 +6,7 @@ on:
   pull_request:
   workflow_dispatch:
 env:
-  npm.publish: true
+  NPM_PUBLISH: true
 jobs:
   frontend:
     uses: jonasthim/reusable-workflows/.github/workflows/frontend-lambda-pipeline.yml@main
