@@ -1,0 +1,11 @@
+name: 'test-pipelines'
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  workflow_dispatch:
+jobs:
+  terraform:
+    uses: jonasthim/reusable-workflows/.github/workflows/frontend-lambda-pipeline.yml@main
+    secrets: inherit
