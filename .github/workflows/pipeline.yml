@@ -5,11 +5,9 @@ on:
       - main
   pull_request:
   workflow_dispatch:
-env:
-  NPM_PUBLISH: true
 jobs:
   frontend:
     uses: jonasthim/reusable-workflows/.github/workflows/frontend-lambda-pipeline.yml@main
     secrets: inherit
     with:
-      npm-publish: false
+      npm-publish: true
