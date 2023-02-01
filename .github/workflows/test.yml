@@ -1,0 +1,15 @@
+name: 'Licenses'
+on:
+  push:
+jobs:
+  licenses:
+    runs-on: ubuntu-latest
+    name: License compliance
+    steps:
+      - name: Get files from cache
+        uses: actions/download-artifact@v3
+        with:
+          name: ${{ github.run_id }}
+          path: ./
+      - name: License compliance check
+        run: ls -lah
