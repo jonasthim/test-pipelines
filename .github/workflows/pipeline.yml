@@ -6,8 +6,40 @@ on:
   pull_request:
   workflow_dispatch:
 jobs:
-  frontend:
-    uses: jonasthim/reusable-workflows/.github/workflows/frontend-lambda-pipeline.yml@main
-    secrets: inherit
-    with:
-      npm-publish: true
+  npm:
+    name: 'Install dependencies'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version: lts/*
+          cache: 'npm'
+          registry-url: 'https://npm.pkg.github.com'
+      - name: Install Dependencies
+        run: npm ci
+      - run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        if: ${{ inputs.npm-publish }}
+      - name: Lint
+        run: |
+          npx eslint './src/**/*.ts' --quiet --fix
+          npx prettier ./src --check
+        continue-on-error: true
+      - name: Compile
+        run: npx tsc
+      - name: Package
+        run: npx sls package
+      - name: Test
+        run: npm test
+      - name: Save build to cache
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ github.run_id }}
+          path: |
+            ./
+            !node_modules/*
+          retention-days: 1
